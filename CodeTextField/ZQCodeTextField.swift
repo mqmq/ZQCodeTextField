@@ -35,11 +35,24 @@ class ZQCodeTextField: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    //验证码、密码获取
+    public  var code:String? {
+        get{
+            var codeString = ""
+            for i in 1...codeCount {
+                let item = self.viewWithTag(i) as! UILabel
+                if let text = item.text {
+                    codeString += text
+                }
+            }
+            return codeString
+        }
+    }
     
-    var codeTextField:UITextField?
-    let codeCount = 6
+    private var codeTextField:UITextField?
+    private let codeCount = 6
     
-    func commonInit(){
+    private func commonInit(){
         
         let space:CGFloat! = 15.0
         let itemWidth = (self.frame.size.width - space*CGFloat(codeCount - 1))/CGFloat(codeCount)
@@ -72,8 +85,8 @@ class ZQCodeTextField: UIView {
         codeTextField?.keyboardType = .numberPad
         self.addSubview(codeTextField!)
     }
-    
-    func getHaveCodeItem() -> UILabel {
+    //获取最后一个有code的item
+   private func getHaveCodeItem() -> UILabel {
         for i in (1...codeCount).reversed() {
             let item = self.viewWithTag(i) as! UILabel
             if let text = item.text {
@@ -85,7 +98,8 @@ class ZQCodeTextField: UIView {
         return self.viewWithTag(1) as! UILabel
     }
     
-    func getEmptyCodeItem() -> UILabel {
+    //获取最后一个空item
+   private func getEmptyCodeItem() -> UILabel {
         for i in 1...codeCount {
             let item = self.viewWithTag(i) as! UILabel
             if let text = item.text {
@@ -103,6 +117,7 @@ class ZQCodeTextField: UIView {
     }
 }
 
+//输入
 extension ZQCodeTextField:UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if string.isEmpty == false {
@@ -124,6 +139,7 @@ extension ZQCodeTextField:UITextFieldDelegate {
     }
 }
 
+//删除
 extension ZQCodeTextField {
     func exchangeMethod() {
         let originaMethod = class_getInstanceMethod(UITextField.classForCoder(), NSSelectorFromString("deleteBackward"))
